@@ -11,6 +11,8 @@ const getAdmin = async (params: any) => {
             contains: params.searchTerm,
             mode: "insensitive",
           },
+        },
+        {
           email: {
             contains: params.searchTerm,
             mode: "insensitive",
