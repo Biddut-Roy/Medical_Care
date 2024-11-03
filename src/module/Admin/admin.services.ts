@@ -4,22 +4,46 @@ const prisma = new PrismaClient();
 
 const getAdmin = async (params: any) => {
   const addCondition: Prisma.AdminWhereInput[] = [];
+  //   if (params.searchTerm) {
+  //     addCondition.push({
+  //       OR: [
+  //         {
+  //           name: {
+  //             contains: params.searchTerm,
+  //             mode: "insensitive",
+  //           },
+  //         },
+  //         {
+  //           email: {
+  //             contains: params.searchTerm,
+  //             mode: "insensitive",
+  //           },
+  //         },
+  //       ],
+  //     });
+  //   }
+
+  //   if (params.searchTerm) {
+  //     addCondition.push({
+  //       OR: ["name", "email"].map((field) => ({
+  //         [field]: {
+  //           contains: params.searchTerm,
+  //           mode: "insensitive",
+  //         },
+  //       })),
+  //     });
+  //   }
+
+  const SearchFields = ["name", "email"];
+
   if (params.searchTerm) {
     addCondition.push({
-      OR: [
-        {
-          name: {
-            contains: params.searchTerm,
-            mode: "insensitive",
-          },
+      OR: SearchFields.map((field) => ({
+        [field]: {
+          contains: params.searchTerm,
+          mode: "insensitive",
         },
-        {
-          email: {
-            contains: params.searchTerm,
-            mode: "insensitive",
-          },
-        },
-      ],
+      })),
     });
   }
 
