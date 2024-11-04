@@ -3,6 +3,8 @@ import { Prisma, PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 const getAdmin = async (params: any) => {
+  const { searchTerm, ...filterData } = params;
+
   const addCondition: Prisma.AdminWhereInput[] = [];
   //   if (params.searchTerm) {
   //     addCondition.push({
@@ -47,7 +49,18 @@ const getAdmin = async (params: any) => {
     });
   }
 
+  if (Object.keys(filterData).length > 0) {
+    addCondition.push({
+      AND: Object.keys(filterData).map((key) => ({
+        [key]: {
+          equals: (filterData as any)[key],
+        },
+      })),
+    });
+  }
+
   const whereCondition: Prisma.AdminWhereInput = { AND: addCondition };
+
   const Result = await prisma.admin.findMany({
     where: whereCondition,
   });
