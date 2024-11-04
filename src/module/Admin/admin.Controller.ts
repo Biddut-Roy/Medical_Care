@@ -1,28 +1,13 @@
 import { Request, Response } from "express";
 import { adminService } from "./admin.services";
-
-const pick = <T extends Record<string, unknown>, K extends keyof T>(
-  obj: T,
-  keys: K[]
-) => {
-  const finalObj: Partial<T> = {};
-  for (const key of keys) {
-    if (obj && obj.hasOwnProperty.call(obj, key)) {
-      finalObj[key] = obj[key];
-    }
-  }
-  return finalObj;
-};
+import pick from "../../shared/pick";
+import { adminFilterableField } from "./admin.constant";
 
 const getAllFromDB = async (req: Request, res: Response) => {
   try {
-    const queryData = pick(req.query, [
-      "name",
-      "email",
-      "searchTerm",
-      "contactNumber",
-    ]);
-    const getAllAdmin = await adminService.getAdmin(queryData);
+    const queryData = pick(req.query, adminFilterableField);
+    const Option = pick(req.query, ["page", "limit"]);
+    const getAllAdmin = await adminService.getAdmin(queryData, Option);
     res.status(200).json({
       success: true,
       massages: "Get All admin data",
