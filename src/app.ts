@@ -1,7 +1,7 @@
 import express, { Application, Request, Response } from "express";
 import cors from "cors";
-import { userRoutes } from "./module/user/user.router";
-import { adminRoutes } from "./module/Admin/admin.route";
+import { userRoutes } from "./App/module/user/user.router";
+import { adminRoutes } from "./App/module/Admin/admin.route";
 
 const app: Application = express();
 app.use(cors());
