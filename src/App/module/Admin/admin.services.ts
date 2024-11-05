@@ -4,7 +4,7 @@ import calculatePagination from "../../../helpers/paginationHelper";
 import prisma from "../../../shared/prisma";
 
 const getAdmin = async (params: any, options: any) => {
-  const { limit, skip } = calculatePagination(options);
+  const { page, limit, skip } = calculatePagination(options);
   const { searchTerm, ...filterData } = params;
 
   const addCondition: Prisma.AdminWhereInput[] = [];
@@ -78,7 +78,18 @@ const getAdmin = async (params: any, options: any) => {
             createdAt: "asc",
           },
   });
-  return Result;
+
+  const total = await prisma.admin.count({
+    where: whereCondition,
+  });
+  return {
+    meta: {
+      page,
+      limit,
+      total,
+    },
+    data: Result,
+  };
 };
 
 export const adminService = {
