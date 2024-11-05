@@ -63,8 +63,32 @@ const updateIntoDB = async (req: Request, res: Response) => {
   }
 };
 
+const deleteFromDB = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  const result = await adminService.deleteFromDB(id);
+  res.status(200).json({
+    success: true,
+    massages: "Data delete successfully",
+    data: result,
+  });
+};
+
+const softDeleteFromDB = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  const result = await adminService.deleteFromDB(id);
+  res.status(200).json({
+    success: true,
+    massages: "Data delete successfully",
+    data: result,
+  });
+};
+
 export const adminController = {
   getAllFromDB,
   getByIdFromDB,
   updateIntoDB,
+  deleteFromDB,
+  softDeleteFromDB,
 };
