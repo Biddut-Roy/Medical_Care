@@ -3,6 +3,28 @@ import { adminService } from "./admin.services";
 import { adminFilterableField } from "./admin.constant";
 import pick from "../../../shared/pick";
 
+const sendResponse = <T>(
+  res: Response,
+  jsonData: {
+    statusCode: number;
+    success: boolean;
+    message: string;
+    meta?: {
+      page: number;
+      limit: number;
+      total: number;
+    };
+    data: T | null;
+  }
+) => {
+  res.status(jsonData.statusCode).json({
+    success: jsonData.success,
+    message: jsonData.message,
+    meta: jsonData.meta || null,
+    data: jsonData.data || null,
+  });
+};
+
 const getAllFromDB = async (req: Request, res: Response) => {
   try {
     const queryData = pick(req.query, adminFilterableField);
@@ -77,10 +99,17 @@ const deleteFromDB = async (req: Request, res: Response) => {
 const softDeleteFromDB = async (req: Request, res: Response) => {
   const { id } = req.params;
 
-  const result = await adminService.deleteFromDB(id);
-  res.status(200).json({
+  const result = await adminService.softDeleteFromDB(id);
+
+  // res.status(200).json({
+  //   success: true,
+  //   massages: "soft Data delete successfully",
+  //   data: result,
+  // });
+  sendResponse(res, {
+    statusCode: 200,
     success: true,
-    massages: "Data delete successfully",
+    message: "soft Data delete successfully",
     data: result,
   });
 };

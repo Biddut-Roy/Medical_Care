@@ -8,6 +8,7 @@ const getAdmin = async (params: any, options: any) => {
   const { searchTerm, ...filterData } = params;
 
   const addCondition: Prisma.AdminWhereInput[] = [];
+
   //   if (params.searchTerm) {
   //     addCondition.push({
   //       OR: [
@@ -61,6 +62,10 @@ const getAdmin = async (params: any, options: any) => {
     });
   }
 
+  addCondition.push({
+    isDeleted: false,
+  });
+
   const whereCondition: Prisma.AdminWhereInput = { AND: addCondition };
 
   const Result = await prisma.admin.findMany({
@@ -94,6 +99,7 @@ const getByIdFromDB = async (id: string) => {
   const Result = await prisma.admin.findUnique({
     where: {
       id,
+      isDeleted: false,
     },
   });
   return {
@@ -105,6 +111,7 @@ const updateIntoDB = async (id: string, data: Partial<Admin>) => {
   await prisma.admin.findFirstOrThrow({
     where: {
       id,
+      isDeleted: false,
     },
   });
 
@@ -149,6 +156,7 @@ const softDeleteFromDB = async (id: string): Promise<Admin | null> => {
   await prisma.admin.findUniqueOrThrow({
     where: {
       id,
+      isDeleted: false,
     },
   });
 
