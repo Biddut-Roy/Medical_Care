@@ -5,6 +5,8 @@ import pick from "../../../shared/pick";
 import sendResponse from "../../../shared/sendResponse";
 
 const getAllFromDB = async (req: Request, res: Response) => {
+  console.log("test");
+
   try {
     const queryData = pick(req.query, adminFilterableField);
     const Option = pick(req.query, ["page", "limit", "sortBy", "sortOrder"]);
