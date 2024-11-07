@@ -11,6 +11,7 @@ type IOptionResults = {
   sortBy?: string;
   sortOrder?: string;
 };
+
 const calculatePagination = (option: IoOption): IOptionResults => {
   const page: number = Number(option.page) || 1;
   const limit: number = Number(option.limit) || 10;
