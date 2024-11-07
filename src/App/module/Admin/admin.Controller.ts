@@ -1,16 +1,18 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { adminService } from "./admin.services";
 import { adminFilterableField } from "./admin.constant";
 import pick from "../../../shared/pick";
 import sendResponse from "../../../shared/sendResponse";
 
-const getAllFromDB = async (req: Request, res: Response) => {
-  console.log("test");
+const getAllFromDB = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const queryData = pick(req.query, adminFilterableField);
+  const Option = pick(req.query, ["page", "limit", "sortBy", "sortOrder"]);
 
   try {
-    const queryData = pick(req.query, adminFilterableField);
-    const Option = pick(req.query, ["page", "limit", "sortBy", "sortOrder"]);
-
     const getAllAdmin = await adminService.getAdmin(queryData, Option);
 
     sendResponse(res, {
@@ -21,17 +23,18 @@ const getAllFromDB = async (req: Request, res: Response) => {
       data: getAllAdmin.data,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      massages: error || "Error getting admin data",
-      data: error,
-    });
+    next(error);
   }
 };
 
-const getByIdFromDB = async (req: Request, res: Response) => {
+const getByIdFromDB = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { id } = req.params;
+
   try {
-    const { id } = req.params;
     const getById = await adminService.getByIdFromDB(id);
 
     sendResponse(res, {
@@ -41,15 +44,15 @@ const getByIdFromDB = async (req: Request, res: Response) => {
       data: getById,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      massages: error || "Error getting admin data",
-      data: error,
-    });
+    next(error);
   }
 };
 
-const updateIntoDB = async (req: Request, res: Response) => {
+const updateIntoDB = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { id } = req?.params;
   const data = req?.body;
 
@@ -63,43 +66,53 @@ const updateIntoDB = async (req: Request, res: Response) => {
       data: getById,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      massages: error || "Error getting admin data updated",
-      data: error,
-    });
+    next(error);
   }
 };
 
-const deleteFromDB = async (req: Request, res: Response) => {
+const deleteFromDB = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { id } = req.params;
+  try {
+    const result = await adminService.deleteFromDB(id);
 
-  const result = await adminService.deleteFromDB(id);
-
-  sendResponse(res, {
-    statusCode: 200,
-    success: true,
-    message: "Data delete successfully",
-    data: result,
-  });
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "Data delete successfully",
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
-const softDeleteFromDB = async (req: Request, res: Response) => {
+const softDeleteFromDB = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { id } = req.params;
+  try {
+    const result = await adminService.softDeleteFromDB(id);
 
-  const result = await adminService.softDeleteFromDB(id);
-
-  // res.status(200).json({
-  //   success: true,
-  //   massages: "soft Data delete successfully",
-  //   data: result,
-  // });
-  sendResponse(res, {
-    statusCode: 200,
-    success: true,
-    message: "soft Data delete successfully",
-    data: result,
-  });
+    // res.status(200).json({
+    //   success: true,
+    //   massages: "soft Data delete successfully",
+    //   data: result,
+    // });
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "soft Data delete successfully",
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const adminController = {
