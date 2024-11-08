@@ -8,7 +8,7 @@ const GlobalErrorHandler = (
 ) => {
   res.status(500).json({
     success: false,
-    massages: err || "SomeThing went Wrong",
+    massages: err.message || "SomeThing went Wrong",
     data: err,
   });
 };
