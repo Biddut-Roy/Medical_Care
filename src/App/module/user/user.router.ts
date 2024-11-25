@@ -12,7 +12,7 @@ router.post(
   fileUploader.upload.single("file"),
   (req: Request, res: Response, next: NextFunction) => {
     req.body = userValidation.createAdmin.parse(JSON.parse(req.body.data));
-    return userController.createAdmin(req, res, next);
+    return userController.createAdmin(req, res);
   }
 );
 

@@ -12,7 +12,7 @@ const createAdmin = async (req: Request, res: Response) => {
   } catch (error: any) {
     res.status(500).json({
       success: "false",
-      massage: error?.name || " Admin create Successfully",
+      massage: error?.name || " Admin create Fail",
       data: error,
     });
   }
