@@ -1,5 +1,5 @@
 import { Request } from "express"; // Import Request type from express//+
-import { Admin, Doctor, UserRole } from "@prisma/client";
+import { Admin, Doctor, Patient, UserRole } from "@prisma/client";
 import bcrypt from "bcrypt";
 import prisma from "../../../shared/prisma";
 import { IFile } from "../../interfaces/file";
@@ -68,39 +68,39 @@ const createDoctor = async (req: Request): Promise<Doctor> => {
   return result;
 };
 
-// const createPatient = async (req: Request): Promise<Patient> => {
-//   const file = req.file as IFile;
+const createPatient = async (req: Request): Promise<Patient> => {
+  const file = req.file as IFile;
 
-//   if (file) {
-//     const uploadedProfileImage = await fileUploader.uploadToCloudinary(file);
-//     req.body.patient.profilePhoto = uploadedProfileImage?.secure_url;
-//   }
+  if (file) {
+    const uploadedProfileImage = await fileUploader.uploadToCloudinary(file);
+    req.body.patient.profilePhoto = uploadedProfileImage?.secure_url;
+  }
 
-//   const hashedPassword: string = await bcrypt.hash(req.body.password, 12);
+  const hashedPassword: string = await bcrypt.hash(req.body.password, 12);
 
-//   const userData = {
-//     email: req.body.patient.email,
-//     password: hashedPassword,
-//     role: UserRole.PATIENT,
-//   };
+  const userData = {
+    email: req.body.patient.email,
+    password: hashedPassword,
+    role: UserRole.PATIENT,
+  };
 
-//   const result = await prisma.$transaction(async (transactionClient) => {
-//     await transactionClient.user.create({
-//       data: userData,
-//     });
+  const result = await prisma.$transaction(async (transactionClient) => {
+    await transactionClient.user.create({
+      data: userData,
+    });
 
-//     const createdPatientData = await transactionClient.patient.create({
-//       data: req.body.patient,
-//     });
+    const createdPatientData = await transactionClient.patient.create({
+      data: req.body.patient,
+    });
 
-//     return createdPatientData;
-//   });
+    return createdPatientData;
+  });
 
-//   return result;
-// };
+  return result;
+};
 
 export const userServices = {
   createAdmin,
   createDoctor,
-  // createPatient,
+  createPatient,
 };
