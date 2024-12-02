@@ -102,7 +102,7 @@ const updateIntoDB = async (
 
   await prisma.$transaction(async (transactionClient) => {
     //update patient data
-    const check = await transactionClient.patient.update({
+    await transactionClient.patient.update({
       where: {
         id,
       },
@@ -112,7 +112,6 @@ const updateIntoDB = async (
         medicalReport: true,
       },
     });
-    console.log(check);
 
     // create or update patient health data
     if (patientHealthData) {
